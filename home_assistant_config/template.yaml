@@ -1,0 +1,135 @@
+- trigger:
+      - trigger: time_pattern
+        # This will update every night
+        minutes: '/1'
+  action:
+      - action: weather.get_forecasts
+        data:
+            type: hourly
+        target:
+            entity_id: weather.lyon
+        response_variable: hourly
+  sensor:
+      - name: Eink Hall Data
+        unique_id: 'eink_hall_data'
+        state: 'OK'
+        attributes:
+            weather_condition_now: >
+                {% set cond_now = states('weather.lyon') %}
+                {% if states('sun.sun') == 'below_horizon' %}
+                    {% if cond_now == 'sunny' %} clear-night {% elif cond_now == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond_now }} {% endif %}
+                {% else %}
+                    {{ cond_now }}
+                {% endif %}
+            weather_temperature_now: >
+                {{ state_attr('weather.lyon', 'temperature') | round }}
+            weather_condition_0: >
+                {% set cond0 = hourly['weather.lyon'].forecast[0].condition %}
+                {% set next_setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+                {% set next_rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+                {% set cond0_time = as_timestamp(hourly['weather.lyon'].forecast[0].datetime) %}
+                {% if cond0_time > next_setting or cond0_time < next_rising < next_setting %}
+                    {% if cond0 == 'sunny' %} clear-night {% elif cond0 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond0 }} {% endif %}
+                {% else %}
+                    {{ cond0 }}
+                {% endif %}
+            weather_temperature_0: >
+                {{ hourly['weather.lyon'].forecast[0].temperature | round }}
+            weather_timestamp_0: >
+                {{ as_timestamp(hourly['weather.lyon'].forecast[0].datetime) | timestamp_custom("%H:%M", true) }}
+            weather_condition_1: >
+                {% set cond0 = hourly['weather.lyon'].forecast[1].condition %}
+                {% set next_setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+                {% set next_rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+                {% set cond0_time = as_timestamp(hourly['weather.lyon'].forecast[1].datetime) %}
+                {% if cond0_time > next_setting or cond0_time < next_rising < next_setting %}
+                    {% if cond0 == 'sunny' %} clear-night {% elif cond0 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond0 }} {% endif %}
+                {% else %}
+                    {{ cond0 }}
+                {% endif %}
+            weather_temperature_1: >
+                {{ hourly['weather.lyon'].forecast[1].temperature | round }}
+            weather_timestamp_1: >
+                {{ as_timestamp(hourly['weather.lyon'].forecast[1].datetime) | timestamp_custom("%H:%M", true) }}
+            weather_condition_2: >
+                {% set cond0 = hourly['weather.lyon'].forecast[2].condition %}
+                {% set next_setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+                {% set next_rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+                {% set cond0_time = as_timestamp(hourly['weather.lyon'].forecast[2].datetime) %}
+                {% if cond0_time > next_setting or cond0_time < next_rising < next_setting %}
+                    {% if cond0 == 'sunny' %} clear-night {% elif cond0 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond0 }} {% endif %}
+                {% else %}
+                    {{ cond0 }}
+                {% endif %}
+            weather_temperature_2: >
+                {{ hourly['weather.lyon'].forecast[2].temperature | round }}
+            weather_timestamp_2: >
+                {{ as_timestamp(hourly['weather.lyon'].forecast[2].datetime) | timestamp_custom("%H:%M", true) }}
+            weather_condition_3: >
+                {% set cond0 = hourly['weather.lyon'].forecast[3].condition %}
+                {% set next_setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+                {% set next_rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+                {% set cond0_time = as_timestamp(hourly['weather.lyon'].forecast[3].datetime) %}
+                {% if cond0_time > next_setting or cond0_time < next_rising < next_setting %}
+                    {% if cond0 == 'sunny' %} clear-night {% elif cond0 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond0 }} {% endif %}
+                {% else %}
+                    {{ cond0 }}
+                {% endif %}
+            weather_temperature_3: >
+                {{ hourly['weather.lyon'].forecast[3].temperature | round }}
+            weather_timestamp_3: >
+                {{ as_timestamp(hourly['weather.lyon'].forecast[3].datetime) | timestamp_custom("%H:%M", true) }}
+            weather_condition_4: >
+                {% set cond0 = hourly['weather.lyon'].forecast[4].condition %}
+                {% set next_setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+                {% set next_rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+                {% set cond0_time = as_timestamp(hourly['weather.lyon'].forecast[4].datetime) %}
+                {% if cond0_time > next_setting or cond0_time < next_rising < next_setting %}
+                    {% if cond0 == 'sunny' %} clear-night {% elif cond0 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond0 }} {% endif %}
+                {% else %}
+                    {{ cond0 }}
+                {% endif %}
+            weather_temperature_4: >
+                {{ hourly['weather.lyon'].forecast[4].temperature | round }}
+            weather_timestamp_4: >
+                {{ as_timestamp(hourly['weather.lyon'].forecast[4].datetime) | timestamp_custom("%H:%M", true) }}
+            next_rain_0: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['0 min'] }}
+            next_rain_1: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['5 min'] }}
+            next_rain_2: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['10 min'] }}
+            next_rain_3: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['15 min'] }}
+            next_rain_4: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['20 min'] }}
+            next_rain_5: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['25 min'] }}
+            next_rain_6: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['35 min'] }}
+            next_rain_7: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['45 min'] }}
+            next_rain_8: >
+                {{ state_attr( 'sensor.lyon_next_rain', '1_hour_forecast' )['55 min'] }}
+            trottinettes_count: >
+                {{ states('sensor.trottinettes_count') | int }}
+            best_trottinette_1: >
+                {{ states('sensor.best_trottinette_1') | int }}
+            best_trottinette_2: >
+                {{ states('sensor.best_trottinette_2') | int }}
+            best_trottinette_3: >
+                {{ states('sensor.best_trottinette_3') | int }}
+            best_trottinette_4: >
+                {{ states('sensor.best_trottinette_4') | int }}
+            best_trottinette_5: >
+                {{ states('sensor.best_trottinette_5') | int }}
+            tcl_incidents: >
+                {{ states('sensor.tcl_incidents') }}
+            tcl_incidents_messages: >
+                {{ state_attr('sensor.tcl_incidents_mesages', 'message') }}
+            current_time: >
+                {% set jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"] %}
+                {% set mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] %}
+                {% set now = now() %}
+                {% set jour_index = (now.weekday() + 1) % 7 %}
+                Nous sommes le {{ jours[jour_index] }} {{ now.day }} {{ mois[now.month - 1] }} {{ now.year }}, il est {{ '%02d' | format(now.hour) }}h{{ '%02d' | format(now.minute) }}

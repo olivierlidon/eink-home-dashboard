@@ -1,0 +1,56 @@
+# Sensor for number of scooter available
+- sensor:
+      name: 'Trottinettes Count'
+      command: 'cat /config/script_data/trottinettes_count.txt'
+      unique_id: 'trottinettes_count'
+      scan_interval: 86400
+      value_template: '{{ value | int }}'
+
+# Sensor for the 5 best scooter with their km
+- sensor:
+      name: 'Best Trottinette 1'
+      command: 'cat /config/script_data/best_trottinette_1.txt'
+      scan_interval: 86400
+      value_template: '{{ (value | float / 1000) | round(0) | int }}'
+
+- sensor:
+      name: 'Best Trottinette 2'
+      command: 'cat /config/script_data/best_trottinette_2.txt'
+      scan_interval: 86400
+      value_template: '{{ (value | float / 1000) | round(0) | int }}'
+
+- sensor:
+      name: 'Best Trottinette 3'
+      command: 'cat /config/script_data/best_trottinette_3.txt'
+      scan_interval: 86400
+      value_template: '{{ (value | float / 1000) | round(0) | int }}'
+
+- sensor:
+      name: 'Best Trottinette 4'
+      command: 'cat /config/script_data/best_trottinette_4.txt'
+      scan_interval: 86400
+      value_template: '{{ (value | float / 1000) | round(0) | int }}'
+
+- sensor:
+      name: 'Best Trottinette 5'
+      command: 'cat /config/script_data/best_trottinette_5.txt'
+      scan_interval: 86400
+      value_template: '{{ (value | float / 1000) | round(0) | int }}'
+
+# Sensor for TCL incident lines listing
+- sensor:
+      name: 'TCL Incidents'
+      unique_id: 'tcl_incidents'
+      command: 'cat /config/script_data/tcl_incidents.txt'
+      scan_interval: 86400
+      value_template: '{{ value }}'
+
+# Sensor for incident messages
+- sensor:
+      name: 'TCL Incidents Messages'
+      unique_id: 'tcl_incidents_messages'
+      command: 'cat /config/script_data/tcl_incidents_messages.json'
+      value_template: 'OK'
+      json_attributes:
+          - message
+      scan_interval: 86400

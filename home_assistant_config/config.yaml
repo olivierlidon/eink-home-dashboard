@@ -1,0 +1,4 @@
+# To be able to launch shell scripts with automation on HA
+shell_command:
+    update_trottinettes: /config/scripts/update_trottinettes.sh
+    update_tcl_incidents: /config/scripts/update_tcl_incidents.sh

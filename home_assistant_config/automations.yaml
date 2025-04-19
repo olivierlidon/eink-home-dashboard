@@ -1,0 +1,28 @@
+- id: '1744801661958'
+  alias: Update eink API calls on Motion
+  description: ''
+  triggers:
+      - entity_id:
+            - binary_sensor.motion_sensor
+        to: 'on'
+        trigger: state
+        from: 'off'
+  actions:
+      - action: shell_command.update_trottinettes
+        data: {}
+      - action: shell_command.update_tcl_incidents
+        data: {}
+      - delay: 00:00:01
+      - action: homeassistant.update_entity
+        metadata: {}
+        data:
+            entity_id:
+                - sensor.trottinettes_count
+                - sensor.tcl_incidents_messages
+                - sensor.tcl_incidents
+                - sensor.best_trottinette_1
+                - sensor.best_trottinette_2
+                - sensor.best_trottinette_3
+                - sensor.best_trottinette_4
+                - sensor.best_trottinette_5
+  mode: single
