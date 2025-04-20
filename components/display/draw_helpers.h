@@ -118,3 +118,80 @@ void wrap_text(Display &it, int x, int y, int width, int line_height,
     y_offset += line_height;
   }
 }
+
+void draw_art_deco_frame(Display &it, BaseImage* star_image, int x, int y, int width, int height, int angle_size, int angle_space = 11) {
+  // Star images in angles, first to avoid image on top of line drawing
+  it.image(x + 10, y + 10, star_image);
+  it.image(x + 10, height - 10, star_image, ImageAlign::BOTTOM_LEFT);
+  it.image(width - 10, y + 10, star_image, ImageAlign::TOP_RIGHT);
+
+  // Frames
+  it.rectangle(x, x, width, height);
+  it.rectangle(x + 1, y + 1, width - 2, height - 2);
+  it.rectangle(x + 2, y + 2, width - 4, height - 4);
+  it.rectangle(x + 6, y + 6, width - 12, height - 12);
+
+  // Top left corner
+  it.line(x + angle_space + angle_size, y + angle_space, x + angle_space, y + angle_space + angle_size);
+  it.line(x + angle_space + angle_size, y + angle_space, x + angle_space + (angle_size * 3), y + angle_space);
+  it.line(x + angle_space, y + angle_space + angle_size, x + angle_space, y + angle_space + (angle_size * 3));
+
+  // Bottom left corner
+  it.line(x + angle_space + angle_size, y + height - angle_space, x + angle_space, y + height - angle_space - angle_size);
+  it.line(x + angle_space + angle_size, y + height - angle_space, x + angle_space + (angle_size * 3), y + height - angle_space);
+  it.line(x + angle_space, y + height - angle_space - angle_size, x + angle_space, y + height - angle_space - (angle_size * 3));
+
+  // Top right corner
+  it.line(x + width - angle_space - angle_size, y + angle_space, x + width - angle_space, y + angle_space + angle_size);
+  it.line(x + width - angle_space - angle_size, y + angle_space, x + width - angle_space - (angle_size * 3), y + angle_space);
+  it.line(x + width - angle_space, y + angle_space + angle_size, x + width - angle_space, y + angle_space + (angle_size * 3));
+
+  // Bottom right corner
+  it.line(x + width - angle_space - angle_size, y + height - angle_space, x + width - angle_space, y + height - angle_space - angle_size);
+  it.line(x + width - angle_space - angle_size, y + height - angle_space, x + width - angle_space - (angle_size * 3), y + height - angle_space);
+  it.line(x + width - angle_space, y + height - angle_space - angle_size, x + width - angle_space, y + height - angle_space - (angle_size * 3));
+}
+
+void draw_art_deco_title(Display &it, int x, int y, BaseFont* font, Color color_white, const char *text) {
+  String title = text;
+  int margin = 10;
+
+  int text_width = 0, text_height = 0, x1, y1;
+  it.get_text_bounds(x, y, title.c_str(), font, TextAlign::TOP_CENTER, &x1, &y1, &text_width, &text_height);
+
+  int middle = y1 + text_height / 2 - 14;
+  int x_offset = x1 - 4;
+
+  it.line(x_offset - 50, middle, x_offset - margin, middle);
+  it.line(x_offset - 50, middle + 1, x_offset - margin, middle + 1);
+  it.line(x_offset - 50, middle - 1, x_offset - margin, middle - 1);
+
+  it.line(x_offset - 40, middle + 9, x_offset - margin, middle + 7);
+  it.line(x_offset - 40, middle - 9, x_offset - margin, middle - 7);
+
+  it.line(x_offset - 30, middle + 15, x_offset - margin, middle + 13);
+  it.line(x_offset - 30, middle - 15, x_offset - margin, middle - 13);
+
+  it.line(x_offset + text_width + margin, middle, x_offset + text_width + 50, middle);
+  it.line(x_offset + text_width + margin, middle + 1, x_offset + text_width + 50, middle + 1);
+  it.line(x_offset + text_width + margin, middle - 1, x_offset + text_width + 50, middle - 1);
+
+  it.line(x_offset + text_width + margin, middle + 7, x_offset + text_width + 40, middle + 9);
+  it.line(x_offset + text_width + margin, middle - 7, x_offset + text_width + 40, middle - 9);
+
+  it.line(x_offset + text_width + margin, middle + 13, x_offset + text_width + 30, middle + 15);
+  it.line(x_offset + text_width + margin, middle - 13, x_offset + text_width + 30, middle - 15);
+
+  it.printf(x, y, font, color_white, TextAlign::TOP_CENTER, title.c_str());
+}
+
+void draw_art_deco_separator(Display &it, BaseImage* star_image, int x, int y, int width, int height) {
+  int image_size = 20;
+
+  it.line(x + 30, y - 5, x + width - 30, y - 5);
+  it.line(x + 30, y + height + 5, x + width - 30, y + height + 5);
+
+  it.filled_rectangle(x, y, width, height);
+
+  it.image(x + width / 2 - image_size / 2, y + height / 2 - image_size / 2, star_image);
+}
