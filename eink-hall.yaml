@@ -128,25 +128,32 @@ time:
                       else:
                           - logger.log: 'No sensors updated - skipping display refresh.'
 
+# Images
+image:
+    binary:
+        - file: 'components/images/star.png'
+          id: star_image
+          resize: 20x20
+
 # Include custom fonts
 font:
     - file: 'fonts/GothamRnd-Book.ttf'
       id: font_small_book
       size: 18
-      glyphs: ABCDEGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzàäèéêëîïôöùüçÀÄÈÉÊËÎÏÔÖÙÛÜÇ .,;:!/'[]{}?()0123456789°-+=&%
-    - file: 'fonts/GothamRnd-Bold.ttf'
+      glyphs: ABCDEGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzàäèéêëîïôöùûüçÀÄÈÉÊËÎÏÔÖÙÛÜÇ .,;:!/'[]{}?()0123456789°-+=&%
+    - file: 'fonts/RousseauDeco.ttf'
       id: font_large_bold
       size: 108
       # [' ', '-', '°', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'C']
-    - file: 'fonts/GothamRnd-Bold.ttf'
+    - file: 'fonts/RousseauDeco.ttf'
       id: font_title
       size: 54
       # glyphs: ['M', 'E', 'T', 'O', 'I', 'N', 'F', 'R', 'A', 'S']
-    - file: 'fonts/GothamRnd-Bold.ttf'
+    - file: 'fonts/RousseauDeco.ttf'
       id: font_medium_bold
       size: 30
       # glyphs: [' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'M', 'I', 'N']
-    - file: 'fonts/GothamRnd-Bold.ttf'
+    - file: 'fonts/RousseauDeco.ttf'
       id: font_small_bold
       size: 18
       # glyphs: [' ', '-', '°', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', 'M', 'I', 'N']
@@ -532,7 +539,7 @@ text_sensor:
 # Check if motion is detected in the living room.
 binary_sensor:
     - platform: homeassistant
-      entity_id: binary_sensor.eink_hall_motion_detected_2
+      entity_id: binary_sensor.motion_sensor_hall_occupancy
       id: motion_detected
       on_press:
           then:
@@ -622,9 +629,8 @@ display:
               {"scooter-electric", "\U000F15BE"},
             };
 
-          int eink_screen_width = 480;
-          int wifi_icon_x = 440;
-          int wifi_icon_y = 770;
+          int eink_screen_width = it.get_width();
+          int eink_screen_height = it.get_height();
           int separator_left = 70;
           int separator_width = eink_screen_width - separator_left * 2;
           int separator_height = 3;
@@ -640,19 +646,22 @@ display:
             // Fill background.
             // it.fill(color_black);
 
+            // Art deco style frame
+            draw_art_deco_frame(it, id(star_image), 0, 0, eink_screen_width, eink_screen_height, 20, 20);
+
             it.printf(eink_middle_width, 10, id(font_small_book), color_white, TextAlign::TOP_CENTER, "%s", id(current_time).state.c_str());
 
             int top_title = 44;
 
             // Weather Section
-            it.printf(eink_middle_width, top_title, id(font_title), color_white, TextAlign::TOP_CENTER, "METEO");
+            draw_art_deco_title(it, eink_middle_width, top_title, id(font_title), color_white, "METEO");
 
             int top_today_weather = top_title + 74;
             it.printf(100, top_today_weather, id(font_mdi_large), color_white, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_now).state.c_str()].c_str());
             it.printf(300, top_today_weather, id(font_large_bold), color_white, TextAlign::TOP_CENTER, "%2.0f°C", id(weather_temperature_now).state);
 
             int top_first_weather_separator = top_today_weather + 112;
-            it.filled_rectangle(separator_left, top_first_weather_separator, separator_width, separator_height);
+            draw_art_deco_separator(it, id(star_image), separator_left, top_first_weather_separator, separator_width, separator_height);
 
             auto timestamps = std::array<esphome::homeassistant::HomeassistantTextSensor*, 5>{
               id(weather_timestamp_0),
@@ -713,15 +722,16 @@ display:
             }
 
             int top_second_weather_separator = top_next_hour_weather + 90;
-            it.filled_rectangle(separator_left, top_second_weather_separator, separator_width, separator_height);
+            // it.filled_rectangle(separator_left, top_second_weather_separator, separator_width, separator_height);
 
             int top_informations_title = top_second_weather_separator + 20;
             // Transports Service Section
-            it.printf(240, top_informations_title, id(font_title), color_white, TextAlign::TOP_CENTER, "INFORMATIONS");
+            draw_art_deco_title(it, eink_middle_width, top_informations_title, id(font_title), color_white, "INFOS");
 
             int top_trottinettes = top_informations_title + 60;
             // Trottinettes total number
-            it.printf(60, top_trottinettes + 40, id(font_medium_bold), color_white, TextAlign::CENTER_LEFT, "Total: %s", id(trottinettes_count).state.c_str());
+            it.printf(60, top_trottinettes + 10, id(font_small_book), color_white, TextAlign::CENTER_LEFT, "%s", "Trottinettes");
+            it.printf(60, top_trottinettes + 50, id(font_medium_bold), color_white, TextAlign::CENTER_LEFT, "Total: %s", id(trottinettes_count).state.c_str());
 
             // Best 5 Trottinettes autonomy
             draw_rounded_dithered_box(it, 210, top_trottinettes, 220, 70, 10, color_white); // Scooter box
@@ -742,26 +752,26 @@ display:
               }
             }
 
-            it.filled_rectangle(separator_left, top_trottinettes + 90, separator_width, separator_height);
 
             int top_tcl_incidents = top_trottinettes + 110;
             // TCL incidents
             if (id(tcl_incidents_messages).state != "None") {
-              it.printf(60, top_trottinettes, id(font_medium_bold), color_white, TextAlign::TOP_LEFT, "%s", id(tcl_incidents).state.c_str());
-              wrap_text(it, 10, top_trottinettes + 25, 460, 18, id(tcl_incidents_messages).state.c_str(), id(font_small_book), color_white, color_black, id(current_text_portion), 6);
+              draw_art_deco_separator(it, id(star_image), separator_left, top_trottinettes + 90, separator_width, separator_height);
+              it.printf(60, top_tcl_incidents, id(font_medium_bold), color_white, TextAlign::TOP_LEFT, "%s", id(tcl_incidents).state.c_str());
+              wrap_text(it, 30, top_tcl_incidents + 25, eink_screen_width - 60, 18, id(tcl_incidents_messages).state.c_str(), id(font_small_book), color_white, color_black, id(current_text_portion), 6);
             }
-
-
-            draw_rounded_dithered_box(it, 0, 760, 480, 100, 30, color_white);  // Last update and wifi info box
 
             // Refresh Timestamp
             // Code by EnsconcE from https://community.home-assistant.io/t/esphome-show-time/348903
+            int wifi_icon_x = 460;
+            int wifi_icon_y = 770;
+
             char str_time[17];
             char str_date[17];
             time_t currTime = id(homeassistant_time).now().timestamp;
             strftime(str_time, sizeof(str_time), "%H:%M", localtime(&currTime));
             strftime(str_date, sizeof(str_date), "%d.%m.%Y", localtime(&currTime));
-            it.printf(240, 770, id(font_small_book), color_white, TextAlign::TOP_CENTER, "M.À.J. le %s à %s", str_date, str_time);
+            it.printf(240, 772, id(font_small_book), color_white, TextAlign::TOP_CENTER, "M.À.J. le %s à %s", str_date, str_time);
 
             if(id(wifi_signal_percent).has_state())
             {
