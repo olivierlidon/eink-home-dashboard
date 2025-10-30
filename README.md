@@ -2,6 +2,10 @@
 
 An Art Deco styled e-ink information display for your hallway, showing real-time weather, rain forecasts, electric scooter availability, and public transport incidents.
 
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/31ffbdf6-3f92-41f2-b42c-0c5eb1c5372c" height="400">
+</div>div>
+
 ## Features
 
 -   **Weather Forecast**: Current conditions plus 5-hour hourly forecast with temperatures and icons
