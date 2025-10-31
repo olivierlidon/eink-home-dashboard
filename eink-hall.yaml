@@ -140,11 +140,7 @@ font:
     - file: 'fonts/GothamRnd-Book.ttf'
       id: font_small_book
       size: 18
-<<<<<<< HEAD
       glyphs: ABCDEGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzàäèéêëîïôöùûüçÀÄÈÉÊËÎÏÔÖÙÛÜÇ .,;:!/'[]{}?()0123456789°-+=&%
-=======
-      glyphs: ABCDEGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzàäèéêëîïôöùüçÀÄÈÉÊËÎÏÔÖÙÛÜÇ .,;:!/'[]{}?()0123456789°-+=&%
->>>>>>> 77c1802134837585bb7f0d57ad55ca665ec15a78
     - file: 'fonts/RousseauDeco.ttf'
       id: font_large_bold
       size: 108
