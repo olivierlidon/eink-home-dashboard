@@ -247,6 +247,24 @@ sensor:
       unit_of_measurement: 'Signal %'
       entity_category: 'diagnostic'
 
+    # Weather wind from home assistant
+    - platform: homeassistant
+      entity_id: sensor.eink_hall_data
+      attribute: weather_wind_now
+      id: weather_wind_now
+      on_value:
+          then:
+              - lambda: 'id(data_updated) = true;'
+
+    # Weather humidity from home assistant
+    - platform: homeassistant
+      entity_id: sensor.eink_hall_data
+      attribute: weather_humidity_now
+      id: weather_humidity_now
+      on_value:
+          then:
+              - lambda: 'id(data_updated) = true;'
+
     # Weather temperature from home assistant
     - platform: homeassistant
       entity_id: sensor.eink_hall_data
@@ -659,6 +677,11 @@ display:
             int top_today_weather = top_title + 74;
             it.printf(100, top_today_weather, id(font_mdi_large), color_white, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_now).state.c_str()].c_str());
             it.printf(300, top_today_weather, id(font_large_bold), color_white, TextAlign::TOP_CENTER, "%2.0f°C", id(weather_temperature_now).state);
+
+            it.printf(60, top_today_weather + 84, id(font_small_book), color_white, TextAlign::TOP_LEFT, "Vent: %.0fkm/h", id(weather_wind_now).state);
+            it.printf(270, top_today_weather + 84, id(font_small_book), color_white, TextAlign::TOP_CENTER, "Humidité: %.0f%%", id(weather_humidity_now).state);
+            it.printf(420, top_today_weather + 84, id(font_small_book), color_white, TextAlign::TOP_RIGHT, "Ressenti: %.0f°C", calculate_temperature_feel(id(weather_temperature_now).state, (int)id(weather_humidity_now).state, id(weather_wind_now).state));
+
 
             int top_first_weather_separator = top_today_weather + 112;
             draw_art_deco_separator(it, id(star_image), separator_left, top_first_weather_separator, separator_width, separator_height);

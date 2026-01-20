@@ -195,3 +195,40 @@ void draw_art_deco_separator(Display &it, BaseImage* star_image, int x, int y, i
 
   it.image(x + width / 2 - image_size / 2, y + height / 2 - image_size / 2, star_image);
 }
+
+float calculate_temperature_feel(float temperature_celsius, int humidity_percent, float wind_speed_kmh) {
+  // Calcul de la température ressentie selon les formules officielles
+
+  // Cas 1: Chaleur ressentie (Humidex) - applicable si T > 15°C et humidité > 50%
+  if (temperature_celsius > 15.0f && humidity_percent > 50) {
+    // Approximation de la température de rosée: T_H ≈ T_A - (100 - H) / 5
+    float dew_point = temperature_celsius - (100.0f - humidity_percent) / 5.0f;
+
+    // Formule Humidex: T_A + 0.5555 * [6.11 * e^(5417.7530 * (1/273.16 - 1/(273.15 + T_H))) - 10]
+    float exponent = 5417.7530f * (1.0f / 273.16f - 1.0f / (273.15f + dew_point));
+    float humidex = temperature_celsius + 0.5555f * (6.11f * exp(exponent) - 10.0f);
+    return humidex;
+  }
+
+  // Cas 2: Froid ressenti - applicable si T < 10°C
+  if (temperature_celsius < 10.0f) {
+    // Cas 2a: Vent modéré à fort (V > 4.8 km/h)
+    // T_R = 13.12 + 0.6215*T_A + (0.3965*T_A - 11.37) * V^0.16
+    if (wind_speed_kmh > 4.8f) {
+      float v_pow = pow(wind_speed_kmh, 0.16f);
+      float wind_chill = 13.12f + 0.6215f * temperature_celsius
+                        + (0.3965f * temperature_celsius - 11.37f) * v_pow;
+      return wind_chill;
+    }
+    // Cas 2b: Vent faible (0 < V <= 4.8 km/h)
+    // T_R = T_A + 0.2 * (0.1345*T_A - 1.59) * V
+    else if (wind_speed_kmh > 0.0f) {
+      float wind_chill = temperature_celsius
+                        + 0.2f * (0.1345f * temperature_celsius - 1.59f) * wind_speed_kmh;
+      return wind_chill;
+    }
+  }
+
+  // Cas par défaut: température réelle
+  return temperature_celsius;
+}
